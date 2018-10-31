@@ -1,0 +1,18 @@
+FROM debian
+LABEL maintainer "Vanush Misha Paturyan <misha@cs.nuim.ie>"
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+	&& apt-get -y dist-upgrade \
+	&& apt-get clean
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+	python3-pip
+
+COPY requirements.txt requirements.txt
+RUN /usr/bin/pip3 install -r requirements.txt
+
+WORKDIR /app
+ENV FLASK_ENV=development
+ENTRYPOINT ["/usr/bin/python3", "web.py"]
+
+EXPOSE 5000
