@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Upload CSV file with industries names</h3>
+<form method=post enctype=multipart/form-data>
+  <select id="city" name="city">
+    <option value="">--Please select a city--</option>
+    {% for city in cities %}
+    <option value="{{ city }}">{{ city }}</option>
+    {% endfor %}
+  <input type=file name=file>
+  <input type=submit value=Upload>
+</form>
+{% endblock %}
