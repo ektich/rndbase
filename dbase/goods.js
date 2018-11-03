@@ -2,15 +2,22 @@
 
 db = new Mongo().getDB("rndbase")
 
+db.goods.drop()
 db.createCollection("goods", {
     validator: {
 	$jsonSchema: {
 	    bsonType: "object",
-	    required: ["name", "industry"],
+	    required: ["name", "era", "industry"],
 	    properties: {
 		name: {
 		    bsonType: "string",
 		    description: "internal goods name"
+		},
+		era: {
+		    bsonType: "number",
+		    minimum: 1,
+		    maximum: 6,
+		    description: "era goods belong to"
 		},
 		industry: {
 		    bsonType: "string",
@@ -23,6 +30,10 @@ db.createCollection("goods", {
 		"en.name": {
 		    bsonType: "string",
 		    description: "name of the resource in British English"
+		},
+		"en.industry": {
+		    bsonType: "string",
+		    description: "industry name in British English"
 		}
 	    }
 	}
@@ -36,146 +47,376 @@ db.goods.createIndex({'industry': 1})
 // insert initial data
 db.goods.insertMany([
     { name : 'grain',
-      en: {name : 'Grain'},
-      industry : 'grain farm'},
+      industry : 'grain farm',
+      era: 1,
+      en: { name : 'Grain',
+	    industry : 'Grain Farm'
+	  }
+    },
     { name : 'wood',
-      en: {name : 'Wood'},
-      industry : 'lumber storage'},
+      industry : 'lumber storage',
+      era: 1,
+      en: {name : 'Wood',
+           industry : 'Lumber Storage'
+	  }
+    },
     { name : 'coal',
-      en:  {name : 'Coal'},
-      industry : 'coal mine'},
+      industry : 'coal mine',
+      era: 1,
+      en:  {name : 'Coal',
+	    industry : 'Coal Mine'
+	   }
+    },
     { name : 'cattle',
-      en: {name : 'Cattle'},
-      industry : 'cattle farm'},
+      industry : 'cattle farm',
+      era: 1,
+      requires: ['grain'],
+      en: {name : 'Cattle',
+	   industry : 'Cattle Farm'
+	  }
+    },
     { name : 'boards',
-      en: { name : 'Boards'},
-      industry : 'sawmill'},
+      industry : 'sawmill',
+      era: 1,
+      requires: ['wood'],
+      en: { name : 'Boards',
+	    industry : 'Sawmill'
+	  }
+    },
     { name : 'iron ore',
-      en: { name : 'Iron Ore'},
-      industry : 'iron ore mine'},
+      industry : 'iron ore mine',
+      era: 1,
+      en: { name : 'Iron Ore',
+	    industry : 'Iron Ore'
+	  }
+    },
     { name : 'iron',
-      en: { name : 'Iron'},
-      industry : 'iron works'},
+      industry : 'iron works',
+      era: 1,
+      requires: ['coal', 'iron ore'],
+      en: { name : 'Iron',
+	    industry : 'Iron Works'
+	  }
+    },
     { name : 'leather',
-      en: { name : 'Leather'},
-      industry : 'tannery'},
+      industry : 'tannery',
+      era: 1,
+      requires: ['cattle', 'grain'],
+      en: { name : 'Leather',
+	    industry: 'Tannery'
+	  }
+    },
     { name : 'cotton',
-      en: { name : 'Cotton'},
-      industry : 'cotton warehouse'},
+      industry : 'cotton warehouse',
+      era: 1,
+      en: { name : 'Cotton',
+	    industry : 'Cotton Warehouse'
+	  }
+    },
     { name : 'thread',
-      en: { name : 'Thread'},
-      industry : 'spinning company'},
+      industry : 'spinning company',
+      era: 1,
+      requires: ['cotton'],
+      en: { name : 'Thread',
+	    industry : 'Spinning Company'
+	  }
+    },
     { name : 'flour',
-      en: { name : 'Flour'},
-      industry : 'mill'},
+      industry : 'mill',
+      era: 2,
+      requires: ['grain'],
+      en: { name : 'Flour',
+	    industry : 'Mill'
+	  }
+    },
     { name : 'meat',
-      en: { name : 'Meat'},
-      industry : 'butchery'},
+      era: 2,
+      requires: ['cattle'],
+      industry : 'butchery',
+      en: { name : 'Meat',
+	    industry : 'Butchery'
+	  }
+    },
     { name : 'paper',
-      en: { name : 'Paper'},
-      industry : 'paper mill'},
+      era: 2,
+      requires: ['wood'],
+      industry : 'paper mill',
+      en: { name : 'Paper',
+	    industry : 'Paper Mill'
+	  }
+    },
     { name : 'pastries',
-      en: { name : 'Pastries'},
-      industry : 'large scale bakery'},
+      era: 2,
+      requires: ['paper', 'flour'],
+      industry : 'large scale bakery',
+      en: { name : 'Pastries',
+	    industry : 'large scale bakery'
+	  }
+    },
     { name : 'textiles',
-      en: { name : 'Textiles'},
-      industry : 'weaving mill'},
+      era: 2,
+      requires: ['thread'],
+      industry : 'weaving mill',
+      en: { name : 'Textiles',
+	    industry : 'weaving mill'
+	  }
+    },
     { name : 'hardware',
-      en: { name : 'Hardware'},
-      industry : 'metal factory'},
+      industry : 'metal factory',
+      era: 2,
+      requires: ['iron','coal'],
+      en: { name : 'Hardware',
+	    industry : 'Metal Factory'
+	  }
+    },
     { name : 'copper ore',
-      en: { name : 'Copper Ore'},
-      industry : 'copper mine'},
+      industry : 'copper mine',
+      era: 2,
+      en: { name : 'Copper Ore',
+	    industry : 'Copper Mine'
+	  }
+    },
     { name : 'quartz',
-      en: { name : 'Quartz'},
-      industry : 'quartz quarry'},
+      industry : 'quartz quarry',
+      era: 2,
+      en: { name : 'Quartz',
+	    industry : 'Quartz Quarry'
+	  }
+    },
     { name : 'copper',
-      en: { name : 'Copper'},
-      industry : 'copper smelting'},
+      industry : 'copper smelting',
+      era: 3,
+      requires: ['coal', 'copper ore'],
+      en: { name : 'Copper',
+	    industry : 'Copper Smelting'
+	  }
+    },
     { name : 'steel',
-      en: { name : 'Steel'},
-      industry : 'steelworks'},
+      industry : 'steelworks',
+      era: 3,
+      requires: ['coal', 'iron'],
+      en: { name : 'Steel',
+	    industry : 'Steelworks'}
+    },
     { name : 'shoes',
-      en: { name : 'Shoes'},
-      industry : 'shoemaker'},
+      industry : 'shoemaker',
+      era: 3,
+      requires: ['leather', 'hardware'], 
+      en: { name : 'Shoes',
+	    industry : 'Shoemaker'
+	  }
+    },
     { name : 'packaging',
-      en: { name : 'Packaging'},
-      industry : 'packaging manufacturer'},
+      industry : 'packaging manufacturer',
+      era: 3,
+      requires: ['boards', 'paper'],
+      en: { name : 'Packaging',
+	    industry : 'packaging manufacturer'
+	  }
+    },
     { name : 'wires',
-      en: { name : 'Wires'},
-      industry : 'wiremaker'},
+      industry : 'wiremaker',
+      era: 3,
+      requires: ['copper'],
+      en: { name : 'Wires',
+	    industry : 'Wiremaker'
+	  }
+    },
     { name : 'pipes',
-      en: { name : 'Pipes'},
-      industry : 'pipe warehouse'},
+      industry : 'pipe warehouse',
+      era: 3,
+      requires: ['hardware', 'copper'],
+      en: { name : 'Pipes',
+	    industry : 'Pipe Warehouse'
+	  }
+    },
     { name : 'glassware',
-      en: { name : 'Glassware'},
-      industry : 'glass factory'},
+      industry : 'glass factory',
+      era: 3,
+      requires: ['quartz'],
+      en: { name : 'Glassware',
+	    industry : 'Glass Factory'
+	  }
+    },
     { name : 'windows',
-      en: { name : 'Windows'},
-      industry : 'windowmaker'},
+      industry : 'windowmaker',
+      era: 3,
+      requires: ['boards','glassware'],
+      en: { name : 'Windows',
+	    industry : 'Windowmaker'
+	  }
+    },
     { name : 'sheet metal',
-      en: { name : 'Sheet Metal'},
-      industry : 'rolling mill'},
+      industry : 'rolling mill',
+      era: 4,
+      requires: ['steel', 'pipes'],
+      en: { name : 'Sheet Metal',
+	    industry : 'Rolling Mill'
+	  }
+    },
     { name : 'crude oil',
-      en: { name : 'Crude Oil'},
-      industry : 'crude oil storage'},
+      industry : 'crude oil storage',
+      era: 4,
+      en: { name : 'Crude Oil',
+	    industry : 'Crude Oil Storage'
+	  }
+    },
     { name : 'lamps',
-      en: { name : 'Lamps'},
-      industry : 'lampmaker'},
+      industry : 'lampmaker',
+      era: 4,
+      requires: ['wires','glassware'],
+      en: { name : 'Lamps',
+	    industry : 'Lampmaker'
+	  }
+    },
     { name : 'food',
-      en: { name : 'Food'},
-      industry : 'food factory'},
+      industry : 'food factory',
+      era: 4,
+      requires: ['pastries', 'meat'],
+      en: { name : 'Food',
+	    industry : 'Food Factory'
+	  }
+    },
     { name : 'clothing',
-      en: { name : 'Clothing'},
-      industry : 'sewing factory'},
+      industry : 'sewing factory',
+      era: 4,
+      requires: ['textiles', 'shoes'],
+      en: { name : 'Clothing',
+	    industry : 'Sewing Factory'
+	  }
+    },
     { name : 'stainless steel',
-      en: { name : 'Stainless Steel'},
-      industry : 'steel refinery'},
+      industry : 'steel refinery',
+      era: 4,
+      requires: ['steel', 'chemicals'],
+      en: { name : 'Stainless Steel',
+	    industry : 'Steel Refinery'
+	  }
+    },
     { name : 'chemicals',
-      en: { name : 'Chemicals'},
-      industry : 'petrochemical plant'},
+      industry : 'petrochemical plant',
+      era: 4,
+      requires: ['crude oil'],
+      en: { name : 'Chemicals',
+	    industry : 'Petrochemical Plant'
+	  }
+    },
     { name : 'silicon',
-      en: { name : 'Silicon'},
-      industry : 'silicon warehouse'},
+      industry : 'silicon warehouse',
+      era: 4,
+      requires: ['quartz'],
+      en: { name : 'Silicon',
+	    industry : 'Silicon Warehouse'
+	  }
+    },
     { name : 'aluminium',
-      en: { name : 'Aluminium'},
-      industry : 'aluminium plant'},
+      industry : 'aluminium plant',
+      era: 5,
+      requires: ['bauxite'],
+      en: { name : 'Aluminium',
+	    industry : 'Aluminium Plant'
+	  }
+    },
     { name : 'bauxite',
-      en: { name : 'Bauxite'},
-      industry : 'bauxite mine'},
+      industry : 'bauxite mine',
+      era: 5,
+      en: { name : 'Bauxite',
+	    industry : 'Bauxite Mine'
+	  }
+    },
     { name : 'plastics',
-      en: { name : 'Plastics'},
-      industry : 'refinery'},
+      industry : 'refinery',
+      era: 5,
+      requires: ['chemicals'],
+      en: { name : 'Plastics',
+	    industry: 'Refinery'
+	  }
+    },
     { name : 'steel beams',
-      en: { name : 'Steel Beams'},
-      industry : 'steel beam factory'},
+      industry : 'steel beam factory',
+      era: 5,
+      requires: ['steel', 'pipes'],
+      en: { name : 'Steel Beams',
+	    industry : 'Steel Beam Factory'
+	  }
+    },
     { name : 'pottery',
-      en: { name : 'Pottery'},
-      industry : 'ceramic furnace'},
+      industry : 'ceramic furnace',
+      era: 5,
+      requires: ['quartz'],
+      en: { name : 'Pottery',
+	    industry : 'ceramic furnace'
+	  }
+    },
     { name : 'petrol',
-      en: { name : 'Petrol'},
-      industry : 'petrol refinery'},
+      industry : 'petrol refinery',
+      era: 5,
+      requires: ['crude oil', 'chemicals'],
+      en: { name : 'Petrol',
+	    industry : 'Petrol Refinery'
+	  }
+    },
     { name : 'machinery',
-      en: { name : 'Machinery'},
-      industry : 'mechanical engineering'},
+      era: 5,
+      requires: ['sheet metal','wires'],
+      industry : 'mechanical engineering',
+      en: { name : 'Machinery',
+	    industry : 'mechanical engineering'
+	  }
+    },
     { name : 'cars',
-      en: { name : 'Cars'},
-      industry : 'car factory'},
+      era: 5,
+      requires: ['textiles','windows','sheet metal','lamps'],
+      industry : 'car factory',
+      en: { name : 'Cars',
+	    industry : 'Car Factory'
+	  }
+    },
     { name : 'household goods',
-      en: { name : 'Household Goods'},
-      industry : 'household supplies factory'},
+      era: 6,
+      requires: ['glassware','food','stainless steel'],
+      industry : 'household supplies factory',
+      en: { name : 'Household Goods',
+	    industry : 'Household Supplies Factory'
+	  }
+    },
     { name : 'electronics',
-      en: { name : 'Electronics'},
-      industry : 'electronics factory'},
+      era: 6,
+      requires: ['machinery','plastics','silicom'],
+      industry : 'electronics factory',
+      en: { name : 'Electronics',
+	    industry : 'Electronics Factory'
+	  }
+    },
     { name : 'toys',
-      en: { name : 'Toys'},
-      industry : 'toys factory'},
+      era: 6,
+      requires: ['boards','plastics'],
+      industry : 'toys factory',
+      en: { name : 'Toys',
+	    industry : 'Toys Factory'
+	  }
+    },
     { name : 'sports goods',
-      en: { name : 'Sports Goods'},
-      industry : 'sports good manufacturer'},
+      era: 6,
+      requires: ['aluminium'],
+      industry : 'sports good manufacturer',
+      en: { name : 'Sports Goods',
+	    industry : 'Sports Good Manufacturer'
+	  }
+    },
     { name : 'toiletries',
-      en: { name : 'Toiletries'},
-      industry : 'toiletries factory'},
+      era: 6,
+      requires: ['pottery','stainless steel'],
+      industry : 'toiletries factory',
+      en: { name : 'Toiletries',
+	    industry : 'Toiletries Factory'
+	  }
+    },
     { name : 'pharmaceuticals',
-      en: { name : 'Pharmaceuticals'},
-      industry : 'pharmaceutical refinery'}])
+      era: 6,
+      requires: ['cemicals', 'plastics'],
+      industry : 'pharmaceutical refinery',
+      en: { name : 'Pharmaceuticals',
+	    industry : 'Pharmaceutical Refinery'
+	  }
+    }])

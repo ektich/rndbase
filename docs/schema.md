@@ -9,7 +9,8 @@ SOE map is split into 10 regions. Each region has 5 cities and varying
 number of industries. There are also harbours and warehouses from
 where goods can be picked up. Each city also has a landmark.
 
-Each industry should be represented by a document in the "industries"
+### Industries
+Each industry should be represented by a document in the _industries_
 collection. It should have a name that identifies the industry, and
 location (encoded as a compas point: 'n', 's', 'e', 'w' etc). To help
 with translations, for each language there should be a sub-document,
@@ -19,7 +20,10 @@ language. Each industry should also have distances to different cities
 set in a sub-document called "distances". Distance is specified as a
 number of tracks.
 
+Following JSON Schema is used to validate documents within
+_industries_ collection:
 
+```javascript
 {
  bsonType: "object",
  properties: {
@@ -27,9 +31,9 @@ number of tracks.
 	  bsonType: "string",
 	  description: "internal name of the industry"
     },
-	resource: {
+	goods: {
 	  bsonType: "string",
-	  description: "internal name of the resource"
+	  description: "internal name of the goods"
 	},
 	"location.city" : {
 	  bsonType: "string",
@@ -45,3 +49,4 @@ number of tracks.
 	}
  }
 }
+```
