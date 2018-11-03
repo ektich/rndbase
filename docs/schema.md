@@ -31,10 +31,6 @@ _industries_ collection:
 	  bsonType: "string",
 	  description: "internal name of the industry"
     },
-	goods: {
-	  bsonType: "string",
-	  description: "internal name of the goods"
-	},
 	"location.city" : {
 	  bsonType: "string",
 	  description: "internal name of the city"
