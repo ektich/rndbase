@@ -71,3 +71,27 @@ class Db(object):
         result = self.db.goods.find(projection=projection)
         return {r['name']: {'name': r[lang]['name'],
                             'industry': r['industry']} for r in result}
+
+    def update_industry(self, name, city, region, cpoint):
+        """Update information about the industry
+
+        If the record about the industry does not exist in the
+        database it will be  created
+
+        :param name: name of the industry
+        :param city: name of the city
+        :param region: name of the region
+        :param cpoint: compass point"""
+
+        d = {'name': name,
+             'location': {
+                 'city': city,
+                 'region': region,
+                 'cpoint': cpoint}}
+
+        try:
+            self.db.industries.replace_one(filter=d,
+                                           replacement=d,
+                                           upsert=True)
+        except pymongo.errors.WriteError:
+            print("inserting of {} failed".format(d))

@@ -1,6 +1,6 @@
 """Collection of functions to process imports from CSV files"""
 
-from app.db import Db
+from flaskapp.db import Db
 import re
 
 # compass point remapping
@@ -15,7 +15,7 @@ cp_map = {'north': 'n',
           }
 
 
-def import_industries(file, city):
+def import_industries(file, city, region):
     """Import industries for a city
 
     A lot of things are assumed, but what can be extracted from the
@@ -23,6 +23,7 @@ def import_industries(file, city):
 
     :param file: uploaded CSV file
     :param city: city for which processing is done
+    :param region: region in which industry and city are located
     """
 
     db = Db(host='db')  # should use configuration parameter!!!
@@ -40,7 +41,7 @@ def import_industries(file, city):
         (good, rest) = line.split(',', 1)
         try:
             (industry, rest) = rest.split('-', 1)
-            # print("{}: {}".format(good, industry))
+            industry = industry.strip()
             # try to carve out industry name from the rest part
             location = re.sub(industry, '', rest)
             # and now split location into city and compass point
@@ -48,6 +49,10 @@ def import_industries(file, city):
             # compas might have a comma at the end
             compass = compass.strip(',')
             print("{}:{}".format(city, cp_map[compass]))
+            db.update_industry(name=industry,
+                               city=city,
+                               region=region,
+                               cpoint=cp_map[compass])
         except (ValueError, UnboundLocalError, KeyError):
             unprocessed.append(line)
 

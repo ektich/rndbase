@@ -1,7 +1,6 @@
 from flask import render_template, flash, request, redirect
-from app import app
-from app.db import Db
-import app.process_csv
+from flaskapp import app
+from flaskapp.db import Db
 
 
 @app.route('/')

@@ -1,5 +1,5 @@
 # Run dev server
-from app import app
+from flaskapp import app
 
 
 def main():
