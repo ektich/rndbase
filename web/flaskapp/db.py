@@ -15,7 +15,7 @@ class Db(object):
         authenticated against the database
 
         :param host: MongoDB server hostname (default localhost)
-        :param database: Database to connect to (default assetsdb)
+        :param database: Database to connect to (default rndbase)
         :param username: Username used for authentication
         :param password: Password used for authentication
         """
@@ -35,10 +35,35 @@ class Db(object):
 
         self.db.close()
 
+    def get_all_regions(self, lang='en', return_dict=False):
+        """Get the list of all regions in the database
+
+        By default return list containing names of the regions in UK
+        English.
+        If return_dict is True return list of dictionaries of {name:
+        'name', label: 'Name'} format, where 'name' is the internal
+        name of the region, and label is the name of the
+        region in specified language.
+
+        :param lang: language for the lablels (default en)
+        :return_dict: return as list of dictionaries (defaul False)
+        """
+
+        projection = {'name': True,
+                      "{}.name".format(lang): True,
+                      "_id": False}
+
+        result = self.db.regions.find(projection=projection)
+        if return_dict:
+            return [{'name': r['name'],
+                     'label': r[lang]['name']} for r in result]
+        else:
+            return [r[lang]['name'] for r in result]
+
     def get_all_cities(self, lang='en'):
         """Get the list of all cities present in the database
 
-        By default return names of the cities in the (british)
+        By default return names of the cities in the UK
         English.
         An exception is raised if labels in specified language do not
         exist in the database.
