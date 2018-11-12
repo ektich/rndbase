@@ -54,11 +54,14 @@ class Db(object):
                       "_id": False}
 
         result = self.db.regions.find(projection=projection)
-        if return_dict:
-            return [{'name': r['name'],
-                     'label': r[lang]['name']} for r in result]
-        else:
-            return [r[lang]['name'] for r in result]
+        try:
+            if return_dict:
+                return [{'name': r['name'],
+                         'label': r[lang]['name']} for r in result]
+            else:
+                return [r[lang]['name'] for r in result]
+        except KeyError as e:
+            raise NotImplementedError
 
     def get_all_cities(self, lang='en'):
         """Get the list of all cities present in the database

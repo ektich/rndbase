@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Rail Nation Database API</h1>
+
+<p>Content of the database can be retrieved via API. API requests
+  should be prefixed with <code>api</code> and the API
+  version. Current version is v1, so the root of the API is
+  at <code>/api/v1</code>.</p>
+<p>Required language should be specified by the two-letter language
+  code. Currently only UK English language is supported, specified
+  by <code>en</code> in the request URL.</p>
+<p>Following resources are available</p>
+<ul>
+  <li>Regions <a href="/api/v1/en/regions">/api/v1/en/regions</a>: List
+    of regions.</li>
+  <li>Cities <a href="/api/v1/en/nort-west/cities">/api/v1/en/&lt;region&gt;/cities</a>:
+  List of cities in a region. Use internal name of the region
+  as <code>&lt;region&gt;</code>.
+</ul>
+
+{% endblock %}
+
+    

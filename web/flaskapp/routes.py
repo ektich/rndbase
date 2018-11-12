@@ -27,3 +27,9 @@ def upload():
         return render_template('show_csv.html', city=request.form['city'],
                                lines=lines)
     return render_template('upload_csv.html', cities=cities)
+
+
+@app.route('/api')
+def api_info():
+    """Display information about API endpoints"""
+    return render_template('api.html')
